@@ -221,7 +221,7 @@ public class ManageProduct extends JInternalFrame{
 					Statement st = con.createStatement();
 					ResultSet rs = st.executeQuery(query);
 					while(rs.next()) {
-						
+					//test	
 					}
 				} catch (Exception e2) {
 					// TODO: handle exception
