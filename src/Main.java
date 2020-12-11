@@ -19,7 +19,7 @@ import javax.swing.event.MenuListener;
 
 public class Main extends JFrame{
 
-	JMenu menuBuy, menuTransaction, menuProduct, menuUser;
+	JMenu menuTransaction, menuTransactionHistory, menuProduct, menuUser;
 	JMenuBar mb;
 	JMenuItem miLogout, miExit, miStaffManage;
 	JDesktopPane dp;
@@ -35,18 +35,18 @@ public class Main extends JFrame{
 	}
 	public void initiallize() {
 		menuUser = new JMenu("User");
-		menuBuy = new JMenu("Buy");
 		menuTransaction = new JMenu("Transaction");
-		menuProduct = new JMenu("Product");
-		miStaffManage = new JMenuItem("Staff Manage");
+		menuTransactionHistory = new JMenu("Transaction History");
+		menuProduct = new JMenu("Manage Product");
+		miStaffManage = new JMenuItem("Manage Staff");
 		miLogout = new JMenuItem("Logout");
 		miExit = new JMenuItem("Exit");
 		dp = new JDesktopPane();
 		mb = new JMenuBar();
 		mb.add(menuUser);
-		mb.add(menuBuy);
-		mb.add(menuProduct);
 		mb.add(menuTransaction);
+		mb.add(menuProduct);
+		mb.add(menuTransactionHistory);
 		
 		menuUser.add(miStaffManage);
 		menuUser.add(miLogout);
@@ -54,70 +54,35 @@ public class Main extends JFrame{
 		
 		add(dp);
 		miStaffManage.setVisible(false);
-		menuBuy.setVisible(false);
-		menuProduct.setVisible(false);
 		menuTransaction.setVisible(false);
+		menuProduct.setVisible(false);
+		menuTransactionHistory.setVisible(false);
 		
 
-		menuBuy.addMenuListener(new MenuListener() {
-			
-			@Override
-			public void menuSelected(MenuEvent arg0) {
+		menuTransaction.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
 				dp.add(bp);
 				bp.setVisible(true);
 				bp.viewTableCart();
 				bp.viewTableProduct();
-			}
-			
-			@Override
-			public void menuDeselected(MenuEvent arg0) {
-				
-			}
-			
-			@Override
-			public void menuCanceled(MenuEvent arg0) {
-				
-			}
-		});
-
-		menuProduct.addMenuListener(new MenuListener() {
-			
-			@Override
-			public void menuSelected(MenuEvent arg0) {
-				dp.add(mp);
-				mp.setVisible(true);
-				mp.viewProduct();
-			}
-			
-			@Override
-			public void menuDeselected(MenuEvent arg0) {
-				
-			}
-			
-			@Override
-			public void menuCanceled(MenuEvent arg0) {
 				
 			}
 		});
 		
-		menuTransaction.addMenuListener(new MenuListener() {
-			
-			@Override
-			public void menuSelected(MenuEvent arg0) {
+		menuProduct.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {				
+				dp.add(mp);
+				mp.setVisible(true);
+				mp.viewProduct();
+			}
+		});
+		
+		menuTransactionHistory.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {				
 				dp.add(tr);
 				tr.setVisible(true);
 				tr.viewTableDetail();
 				tr.viewTableHeader();
-			}
-			
-			@Override
-			public void menuDeselected(MenuEvent arg0) {
-				
-			}
-			
-			@Override
-			public void menuCanceled(MenuEvent arg0) {
-				
 			}
 		});
 		
@@ -164,8 +129,8 @@ public class Main extends JFrame{
 					menuProduct.setVisible(true);
 					menuTransaction.setVisible(true);
 					miStaffManage.setVisible(true);
+					menuTransactionHistory.setVisible(true);
 				}else {
-					menuBuy.setVisible(true);
 					menuTransaction.setVisible(true);
 				}
 			}

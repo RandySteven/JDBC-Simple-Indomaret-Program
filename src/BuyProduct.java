@@ -203,6 +203,7 @@ public class BuyProduct extends JInternalFrame{
 		
 		viewTableCart();
 		txtTotal.setEditable(false);
+		txtTotal.setBorder(null);
 		btnCheckout.addActionListener(new ActionListener() {
 			
 			@Override

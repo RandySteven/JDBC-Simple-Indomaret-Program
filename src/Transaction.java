@@ -86,7 +86,7 @@ public class Transaction extends JInternalFrame{
 		try {
 			String query = "SELECT HeaderTransaction.TransactionId, HeaderTransaction.TransactionDate, SUM(product.ProductPrice * DetailTransaction.Quantity) "
 					+ "FROM DetailTransaction JOIN product ON DetailTransaction.ProductId = product.ProductId JOIN HeaderTransaction"
-					+ " ON HeaderTransaction.TransactionId = DetailTransaction.TransactionId WHERE StaffId="+id+" "
+					+ " ON HeaderTransaction.TransactionId = DetailTransaction.TransactionId "
 					+ "GROUP BY HeaderTransaction.TransactionId";
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);
@@ -110,8 +110,8 @@ public class Transaction extends JInternalFrame{
 		try {
 			String query = "SELECT DetailTransaction.TransactionId, product.ProductName, product.ProductPrice, DetailTransaction.Quantity "
 					+ "FROM DetailTransaction JOIN product ON DetailTransaction.ProductId = product.ProductId JOIN HeaderTransaction"
-					+ " ON HeaderTransaction.TransactionId = DetailTransaction.TransactionId WHERE StaffId="+id+" "
-							+ "ORDER BY DetailTransaction.TransactionId ASC";
+					+ " ON HeaderTransaction.TransactionId = DetailTransaction.TransactionId"
+							+ " ORDER BY DetailTransaction.TransactionId ASC";
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);
 			while(rs.next()) {
