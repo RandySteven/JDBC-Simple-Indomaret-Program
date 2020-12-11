@@ -25,6 +25,8 @@ public class Login extends JFrame{
 	Main main = new Main();
 	Register regis = new Register();
 	public Integer staffId = 0;
+	Transaction tr = new Transaction();
+	
 	public void initiallize() {
 		northPanel = new JPanel();
 		centerPanel = new JPanel();
@@ -76,6 +78,14 @@ public class Login extends JFrame{
 							staffId = rs.getInt(1);
 							dispose();
 							main.setVisible(true);
+							if(rs.getInt(7)==1) {
+								main.menuProduct.setVisible(true);
+								main.menuBuy.setVisible(true);						
+							}else {
+								main.menuBuy.setVisible(true);								
+							}
+							main.menuTransaction.setVisible(true);
+							tr.id = staffId;
 						}
 					} catch (Exception e) {
 						int opt = JOptionPane.showConfirmDialog(null, "You have not account yet. Do you want to create one?");

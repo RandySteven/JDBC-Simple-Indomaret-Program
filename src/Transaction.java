@@ -17,6 +17,7 @@ import javax.swing.table.DefaultTableModel;
 public class Transaction extends JInternalFrame{
 
 	JPanel leftPanel, rightPanel;
+	int id=0;
 	
 	public void initiallize() {
 		leftPanel = new JPanel();
@@ -24,9 +25,24 @@ public class Transaction extends JInternalFrame{
 		add(leftPanel);
 		add(rightPanel);
 		
+//		query();
 		left();
 		right();
 	}
+	
+//	Main main;
+//	public void query() {
+//		try {
+//			String query = "SELECT * FROM staff WHERE StaffEmail='"+main.login.txtEmail.getText()+"' AND StaffPassword='"+main.login.txtPass.getText()+"' ";
+//			Statement st = con.createStatement();
+//			ResultSet rs = st.executeQuery(query);
+//			while(rs.next()) {
+//				id = rs.getInt(1);
+//			}
+//		} catch (Exception e) {
+//			JOptionPane.showMessageDialog(null, e.getMessage());
+//		}
+//	}
 	
 	JLabel lblTitleHeader;
 	JTable tblHeader;
@@ -66,14 +82,17 @@ public class Transaction extends JInternalFrame{
 		DefaultTableModel model = new DefaultTableModel();
 		model.addColumn("Transaction Id");
 		model.addColumn("Transaction Date");
-		
+		model.addColumn("Total Price");
 		try {
-			String query = "SELECT * FROM HeaderTransaction WHERE StaffId=1";
+			String query = "SELECT HeaderTransaction.TransactionId, HeaderTransaction.TransactionDate, SUM(product.ProductPrice * DetailTransaction.Quantity) "
+					+ "FROM DetailTransaction JOIN product ON DetailTransaction.ProductId = product.ProductId JOIN HeaderTransaction"
+					+ " ON HeaderTransaction.TransactionId = DetailTransaction.TransactionId WHERE StaffId="+id+" "
+					+ "GROUP BY HeaderTransaction.TransactionId";
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);
 			while(rs.next()) {
 				model.addRow(new Object[] {
-						rs.getInt(1), rs.getDate(3)
+						rs.getInt(1), rs.getDate(2), rs.getInt(3)
 				});
 			}
 			tblHeader.setModel(model);
@@ -87,10 +106,11 @@ public class Transaction extends JInternalFrame{
 		model.addColumn("Transaction Id");
 		model.addColumn("Product Name");
 		model.addColumn("Product Price");
-		model.addColumn("Quantity");
-		
+		model.addColumn("Qty");
 		try {
-			String query = "SELECT DetailTransaction.TransactionId, product.ProductName, product.ProductPrice, DetailTransaction.Quantity FROM DetailTransaction JOIN product ON DetailTransaction.ProductId = product.ProductId";
+			String query = "SELECT DetailTransaction.TransactionId, product.ProductName, product.ProductPrice, DetailTransaction.Quantity "
+					+ "FROM DetailTransaction JOIN product ON DetailTransaction.ProductId = product.ProductId JOIN HeaderTransaction"
+					+ " ON HeaderTransaction.TransactionId = DetailTransaction.TransactionId WHERE StaffId="+id+" ";
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);
 			while(rs.next()) {

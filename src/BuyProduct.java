@@ -42,7 +42,7 @@ public class BuyProduct extends JInternalFrame{
 	JTextField txtName, txtPrice, txtStock;
 	JSpinner spnQty;
 	JButton btnAddToCart, btnCheckout, btnRemove;
-	
+	Login login;
 	public void initiallize() {
 		leftPanel = new JPanel();
 		rightPanel = new JPanel();
@@ -119,7 +119,7 @@ public class BuyProduct extends JInternalFrame{
 				int productid = productId;
 				try {
 					PreparedStatement pst = con.prepareStatement(query);
-					pst.setInt(1, 1);
+					pst.setInt(1, login.staffId);
 					pst.setInt(2, productid);
 					pst.setInt(3, qty);
 					pst.execute();
@@ -188,7 +188,7 @@ public class BuyProduct extends JInternalFrame{
 		southRightPanel.add(btnCheckout);
 		
 		viewTableCart();
-		
+		txtTotal.setEditable(false);
 		btnCheckout.addActionListener(new ActionListener() {
 			
 			@Override
@@ -219,12 +219,16 @@ public class BuyProduct extends JInternalFrame{
 					while(rs2.next()) {
 						String query3 = "INSERT INTO DetailTransaction VALUE (LAST_INSERT_ID(), "+rs2.getInt(2)+", "+rs2.getInt(3)+")";
 						String query5 = "DELETE FROM cart WHERE StaffId=1 ";
+						String query6 = "UPDATE product SET ProductStock=ProductStock-"+rs2.getInt(3)+" WHERE ProductId="+rs2.getInt(2)+" ";
 						st3.addBatch(query3);
 						st3.addBatch(query5);
+						st3.addBatch(query6);
 					}
 					st3.executeBatch();
 					JOptionPane.showMessageDialog(null, "Insert detail success");
 					viewTableCart();
+					viewTableProduct();
+					txtTotal.setText(null);
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(null, "Failed insert database : " + e.getMessage());
 				}
@@ -256,6 +260,7 @@ public class BuyProduct extends JInternalFrame{
 	}
 	
 	Integer totalPrice=0;
+	int price = 0;
 	public void viewTableCart() {
 		DefaultTableModel model = new DefaultTableModel();
 		model.addColumn("Product Name");
@@ -272,9 +277,10 @@ public class BuyProduct extends JInternalFrame{
 				model.addRow(new Object[] {						
 						rs.getString(1), rs.getInt(2), rs.getInt(3), rs.getInt(4)
 				});
-				totalPrice += rs.getInt(4);
+				price = rs.getInt(4);
 			}
 			tblCart.setModel(model);
+			totalPrice = totalPrice + price;
 			txtTotal.setText(totalPrice.toString());
 		} catch (Exception e) {
 			// TODO: handle exception
