@@ -23,15 +23,15 @@ import javax.swing.JTextField;
 public class Register extends JFrame{
 
 	JPanel northPanel, centerPanel, southPanel;
-	Main main = new Main();
+	Main main ;
 	public void initiallize() {
 		northPanel = new JPanel();
 		centerPanel = new JPanel();
 		southPanel = new JPanel();
 
-		add(northPanel);
-		add(centerPanel);
-		add(southPanel);
+		add(northPanel, BorderLayout.NORTH);
+		add(centerPanel, BorderLayout.CENTER);
+		add(southPanel, BorderLayout.SOUTH);
 		
 		north();
 		center();
@@ -89,8 +89,8 @@ public class Register extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					String query = "INSERT INTO Staff VALUES (?, ?, ?, ?, ?, ?, ?)";
-					String query2 = "SELECT * FROM Staff";
+					String query = "INSERT INTO staff VALUES (?, ?, ?, ?, ?, ?, ?)";
+					String query2 = "SELECT * FROM staff";
 					File file = staffImageFile.getSelectedFile();
 					String imagePath = file.getPath();
 					InputStream in = new FileInputStream(imagePath);
@@ -111,6 +111,7 @@ public class Register extends JFrame{
 					JOptionPane.showMessageDialog(null, "Insert new staff success");
 					pst.close();
 					dispose();
+					main = new Main(txtStaffEmail.getText());
 					main.setVisible(true);
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(null, "Insert staff failed : " + e.getMessage());
@@ -122,8 +123,8 @@ public class Register extends JFrame{
 	Connection con;
 	public Register() {
 		con = sqlConnector.connection();
-		initiallize();
 		setLayout(new BorderLayout());
+		initiallize();
 		setSize(Toolkit.getDefaultToolkit().getScreenSize());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}

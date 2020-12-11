@@ -22,10 +22,8 @@ public class Login extends JFrame{
 	JTextField txtEmail;
 	JPasswordField txtPass;
 	JButton btnLogin, btnRegister;
-	Main main = new Main();
 	Register regis = new Register();
-	public Integer staffId = 0;
-	Transaction tr = new Transaction();
+	
 	
 	public void initiallize() {
 		northPanel = new JPanel();
@@ -63,6 +61,7 @@ public class Login extends JFrame{
 				dispose();
 			}
 		});
+		
 		btnLogin.addActionListener(new ActionListener() {
 			
 			@Override
@@ -70,25 +69,20 @@ public class Login extends JFrame{
 				if(txtEmail.getText().isEmpty()&&txtPass.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(null, "You cannot put blank text");
 				}else {			
-					String query = "SELECT * FROM staff WHERE StaffEmail='"+txtEmail.getText()+"' AND StaffPassword='"+txtPass.getText()+"' ";
+					String email = txtEmail.getText();
+					String pass = txtPass.getText();
+					String query = "SELECT * FROM staff WHERE StaffEmail='"+email+"' AND StaffPassword='"+pass+"' ";
 					try {
 						Statement st = con.createStatement();
 						ResultSet rs = st.executeQuery(query);
 						if(rs.next()) {				
-							staffId = rs.getInt(1);
+							int staffId = rs.getInt(1);
 							dispose();
+							Main main = new Main(email);
 							main.setVisible(true);
-							if(rs.getInt(7)==1) {
-								main.menuProduct.setVisible(true);
-								main.menuBuy.setVisible(true);						
-							}else {
-								main.menuBuy.setVisible(true);								
-							}
-							main.menuTransaction.setVisible(true);
-							tr.id = staffId;
 						}
 					} catch (Exception e) {
-						int opt = JOptionPane.showConfirmDialog(null, "You have not account yet. Do you want to create one?");
+						int opt = JOptionPane.showConfirmDialog(null, "You have not account yet. Do you want to create one? " + e.getMessage());
 						switch (opt) {
 						case JOptionPane.YES_OPTION:
 							regis.setVisible(true);

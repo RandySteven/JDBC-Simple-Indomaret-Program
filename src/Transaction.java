@@ -25,24 +25,24 @@ public class Transaction extends JInternalFrame{
 		add(leftPanel);
 		add(rightPanel);
 		
-//		query();
+		query();
 		left();
 		right();
 	}
 	
 //	Main main;
-//	public void query() {
-//		try {
-//			String query = "SELECT * FROM staff WHERE StaffEmail='"+main.login.txtEmail.getText()+"' AND StaffPassword='"+main.login.txtPass.getText()+"' ";
-//			Statement st = con.createStatement();
-//			ResultSet rs = st.executeQuery(query);
-//			while(rs.next()) {
-//				id = rs.getInt(1);
-//			}
-//		} catch (Exception e) {
-//			JOptionPane.showMessageDialog(null, e.getMessage());
-//		}
-//	}
+	public void query() {
+		try {
+			String query = "SELECT * FROM staff WHERE StaffEmail='"+email+"'";
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			while(rs.next()) {
+				id = rs.getInt(1);
+			}
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
+		}
+	}
 	
 	JLabel lblTitleHeader;
 	JTable tblHeader;
@@ -110,7 +110,8 @@ public class Transaction extends JInternalFrame{
 		try {
 			String query = "SELECT DetailTransaction.TransactionId, product.ProductName, product.ProductPrice, DetailTransaction.Quantity "
 					+ "FROM DetailTransaction JOIN product ON DetailTransaction.ProductId = product.ProductId JOIN HeaderTransaction"
-					+ " ON HeaderTransaction.TransactionId = DetailTransaction.TransactionId WHERE StaffId="+id+" ";
+					+ " ON HeaderTransaction.TransactionId = DetailTransaction.TransactionId WHERE StaffId="+id+" "
+							+ "ORDER BY DetailTransaction.TransactionId ASC";
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);
 			while(rs.next()) {
@@ -125,9 +126,11 @@ public class Transaction extends JInternalFrame{
 	}
 	
 	Connection con;
-	public Transaction() {
+	String email;
+	public Transaction(String email) {
 		super("Transaction History", true, true, true, true);
 		con = sqlConnector.connection();
+		this.email = email;
 		initiallize();
 		setLayout(new GridLayout(1, 2));
 		setSize(Toolkit.getDefaultToolkit().getScreenSize());

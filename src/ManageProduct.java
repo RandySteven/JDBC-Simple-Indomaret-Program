@@ -179,6 +179,7 @@ public class ManageProduct extends JInternalFrame{
 	JTable tblProduct;
 	JScrollPane scpProduct;
 	JPanel rightCenterTopPanel, rightCenterBottomPanel; 
+	Integer detailProductId = 0;
 	public void right() {
 		tblProduct = new JTable();
 		scpProduct = new JScrollPane();
@@ -208,7 +209,7 @@ public class ManageProduct extends JInternalFrame{
 		tblProduct.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				int row = tblProduct.rowAtPoint(e.getPoint());
-				Integer detailProductId = Integer.parseInt(tblProduct.getValueAt(row, 0).toString());
+				detailProductId = Integer.parseInt(tblProduct.getValueAt(row, 0).toString());
 				String detailName = tblProduct.getValueAt(row, 1).toString();
 				String detailPrice = tblProduct.getValueAt(row, 2).toString();
 				String detailStock = tblProduct.getValueAt(row, 3).toString();
@@ -255,8 +256,22 @@ public class ManageProduct extends JInternalFrame{
 	
 	JPanel leftBottomPanel, rightBottomPanel;
 	JTextField txtDataName, txtDataPrice, txtDataStock;
+	JButton btnAddStock;
 	
+	JFrame updateStockFrame;
+	JTextField txtUpStock;
+	JButton btnUpStock;
 	public void bottom() {
+		updateStockFrame = new JFrame();
+		updateStockFrame.setVisible(false);
+		updateStockFrame.setLayout(new GridLayout(2, 1, 20, 20));
+		updateStockFrame.setLocationRelativeTo(null);
+		txtUpStock = new JTextField();
+		btnUpStock = new JButton("Update");
+		updateStockFrame.setSize(500, 350);
+		updateStockFrame.add(txtUpStock);
+		updateStockFrame.add(btnUpStock);
+		
 		rightCenterBottomPanel.setLayout(new GridLayout(1, 2));
 		leftBottomPanel = new JPanel();
 		rightBottomPanel = new JPanel();
@@ -266,10 +281,43 @@ public class ManageProduct extends JInternalFrame{
 		txtDataName = new JTextField();
 		txtDataPrice = new JTextField();
 		txtDataStock = new JTextField();
-		leftBottomPanel.setLayout(new GridLayout(3, 1, 20, 20));
+		btnAddStock = new JButton("Add Stock");
+		leftBottomPanel.setLayout(new GridLayout(4, 1, 20, 20));
 		leftBottomPanel.add(txtDataName);
 		leftBottomPanel.add(txtDataPrice);
 		leftBottomPanel.add(txtDataStock);
+		leftBottomPanel.add(btnAddStock);
+		
+		btnAddStock.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				updateStockFrame.setVisible(true);
+				
+			}
+		});
+		
+		btnUpStock.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				Integer up = Integer.parseInt(txtUpStock.getText().toString());
+				try {
+					String query = "UPDATE product SET ProductStock=ProductStock+"+up+" WHERE ProductId="+detailProductId+" ";
+					Statement st = con.createStatement();
+					st.execute(query);
+					JOptionPane.showMessageDialog(null, "Success update stock");
+					st.close();
+					viewProduct();
+					txtDataName.setText(null);
+					txtDataPrice.setText(null);
+					txtDataStock.setText(null);
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(null, "Error : " + e.getMessage());
+				}
+				updateStockFrame.setVisible(false);
+			}
+		});
 		
 		txtDataName.setEditable(false);
 		txtDataPrice.setEditable(false);

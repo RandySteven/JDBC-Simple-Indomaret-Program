@@ -1,6 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Taskbar.State;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,7 +43,8 @@ public class BuyProduct extends JInternalFrame{
 	JTextField txtName, txtPrice, txtStock;
 	JSpinner spnQty;
 	JButton btnAddToCart, btnCheckout, btnRemove;
-	Login login;
+		Main main;
+		Transaction tr;
 	public void initiallize() {
 		leftPanel = new JPanel();
 		rightPanel = new JPanel();
@@ -110,16 +112,27 @@ public class BuyProduct extends JInternalFrame{
 		txtName.setEditable(false);
 		txtPrice.setEditable(false);
 		txtStock.setEditable(false);
+		
 		btnAddToCart.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				String search = "SELECT * FROM staff WHERE StaffEmail='"+email+"'";
+				try {
+					Statement st = con.createStatement();
+					ResultSet rs = st.executeQuery(search);
+					if(rs.next()) {
+						staffId = rs.getInt(1);
+					}
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
 				String query = "INSERT INTO cart VALUES (?, ?, ?)";
 				Integer qty = Integer.parseInt(spnQty.getValue().toString());
 				int productid = productId;
 				try {
 					PreparedStatement pst = con.prepareStatement(query);
-					pst.setInt(1, login.staffId);
+					pst.setInt(1, staffId);
 					pst.setInt(2, productid);
 					pst.setInt(3, qty);
 					pst.execute();
@@ -132,6 +145,7 @@ public class BuyProduct extends JInternalFrame{
 				}
 			}
 		});
+		
 		viewTableProduct();
 		
 		tblProduct.addMouseListener(new MouseAdapter() {
@@ -195,10 +209,16 @@ public class BuyProduct extends JInternalFrame{
 			public void actionPerformed(ActionEvent arg0) {
 				String query = "INSERT INTO HeaderTransaction VALUE (?, ?, ?)";
 				String query2 = "SELECT * FROM HeaderTransaction";
-				
+				String search = "SELECT * FROM staff WHERE StaffEmail='"+email+"' ";
 				
 				String query4 = "SELECT * FROM cart";
 				try {
+					Statement searchSt = con.createStatement();
+					ResultSet searchRs = searchSt.executeQuery(search);
+					if(searchRs.next()) {
+						staffId = searchRs.getInt(1);
+					}
+					
 					Statement st = con.createStatement();
 					ResultSet rs = st.executeQuery(query2);
 					while(rs.next()) {
@@ -207,7 +227,7 @@ public class BuyProduct extends JInternalFrame{
 					Timestamp ts = new Timestamp(new java.util.Date().getTime());
 					PreparedStatement pst = con.prepareStatement(query);
 					pst.setInt(1, count);
-					pst.setInt(2, 1);
+					pst.setInt(2, staffId);
 					pst.setTimestamp(3, ts);
 					pst.execute();
 					JOptionPane.showMessageDialog(null, "Insert header success");
@@ -218,7 +238,7 @@ public class BuyProduct extends JInternalFrame{
 					Statement st3 = con.createStatement();
 					while(rs2.next()) {
 						String query3 = "INSERT INTO DetailTransaction VALUE (LAST_INSERT_ID(), "+rs2.getInt(2)+", "+rs2.getInt(3)+")";
-						String query5 = "DELETE FROM cart WHERE StaffId=1 ";
+						String query5 = "DELETE FROM cart WHERE StaffId='"+staffId+"' ";
 						String query6 = "UPDATE product SET ProductStock=ProductStock-"+rs2.getInt(3)+" WHERE ProductId="+rs2.getInt(2)+" ";
 						st3.addBatch(query3);
 						st3.addBatch(query5);
@@ -229,6 +249,10 @@ public class BuyProduct extends JInternalFrame{
 					viewTableCart();
 					viewTableProduct();
 					txtTotal.setText(null);
+					txtName.setText(null);
+					txtPrice.setText(null);
+					txtStock.setText(null);
+					spnQty.setValue(0);
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(null, "Failed insert database : " + e.getMessage());
 				}
@@ -287,11 +311,20 @@ public class BuyProduct extends JInternalFrame{
 		}
 	}
 	
-	Connection con;
 	public BuyProduct() {
+		
+	}
+	String email;
+	int staffId=0;
+	Connection con;
+	public BuyProduct(String email) {
 		super("Buy Product", true, true, true, true);
 		con = sqlConnector.connection();
+		
 		initiallize();
+		this.email = email;
+		
+		
 		left();
 		right();
 		setLayout(new GridLayout(1, 2));
