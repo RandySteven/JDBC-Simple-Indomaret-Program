@@ -174,6 +174,71 @@ public class ManageProduct extends JInternalFrame{
 				}
 			}
 		});
+		
+		btnUpdate.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				try {
+					String name = txtProductName.getText();
+					Integer price = Integer.parseInt(txtProductPrice.getText());
+					Integer stock = Integer.parseInt(txtProductStock.getText());
+					String category = categoryBox.getSelectedItem().toString();
+					File image = productImageChooser.getSelectedFile();
+					String imagePath = image.getPath();
+					InputStream in = new FileInputStream(imagePath);
+					String query = "SELECT * FROM category WHERE CategoryName='"+category+"'";
+					Statement st = con.createStatement();
+					ResultSet rs = st.executeQuery(query);
+					while(rs.next()) {
+						categoryId = rs.getInt(1);
+					}
+					String query2 = "UPDATE product SET ProductName='"+name+"', "
+							+ "ProductPrice="+price+", ProductStock="+stock+", CategoryId="+categoryId+", ProductImage='"+in+"' "
+							+ "WHERE ProductId="+detailProductId+" ";
+					String query3 = "UPDATE product SET ProductName='"+name+"', "
+							+ "ProductPrice="+price+", ProductStock="+stock+", CategoryId="+categoryId+" "
+							+ "WHERE ProductId="+detailProductId+" ";
+					if(in.nullInputStream() != null) {						
+						st.execute(query2);
+					}else {
+						st.execute(query3);
+					}
+					JOptionPane.showMessageDialog(null, "Success edit data");
+					st.close();
+					viewProduct();
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(null, "Error : " + e.getMessage());
+				}
+			}
+		});
+		
+		btnDelete.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					String query = "DELETE FROM product WHERE ProductId="+detailProductId+" ";
+					Statement st = con.createStatement();
+					int opt = JOptionPane.showConfirmDialog(null, "Are you sure want to delete " + detailProductId + " ?" );
+					switch (opt) {
+					case JOptionPane.YES_OPTION:
+						st.execute(query);
+						JOptionPane.showMessageDialog(null, "Delete success");
+						st.close();
+						break;
+
+					default:
+						JOptionPane.showMessageDialog(null, "OK");
+						break;
+					}
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(null, "Error : " + e.getMessage());
+				}
+				
+			}
+		});
 	}
 	
 	JTable tblProduct;
@@ -198,10 +263,8 @@ public class ManageProduct extends JInternalFrame{
 		rightCenterTopPanel = new JPanel();
 		rightPanel.add(rightCenterPanel, BorderLayout.CENTER);
 		rightCenterPanel.setLayout(new GridLayout(2,1));
-		rightCenterPanel.add(rightCenterTopPanel);
+		rightCenterPanel.add(scpProduct);
 		rightCenterPanel.add(rightCenterBottomPanel);
-		
-		rightCenterTopPanel.add(scpProduct);
 		
 		viewProduct();
 		bottom();
@@ -216,17 +279,6 @@ public class ManageProduct extends JInternalFrame{
 				txtDataName.setText(detailName);
 				txtDataStock.setText(detailStock);
 				txtDataPrice.setText(detailPrice);
-				
-				String query = "SELECT * FROM product WHERE ProductId="+detailProductId+" ";
-				try {
-					Statement st = con.createStatement();
-					ResultSet rs = st.executeQuery(query);
-					while(rs.next()) {
-						
-					}
-				} catch (Exception e2) {
-					// TODO: handle exception
-				}
 			}
 		});
 	}
@@ -240,7 +292,8 @@ public class ManageProduct extends JInternalFrame{
 		model.addColumn("Category");
 		try {
 			String query = "SELECT product.ProductId, product.ProductName, product.ProductPrice, product.ProductStock, "
-					+ "category.CategoryName FROM product JOIN category ON product.CategoryId = category.CategoryId";
+					+ "category.CategoryName FROM product JOIN category ON product.CategoryId = category.CategoryId "
+					+ "ORDER BY product.ProductId ASC";
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);
 			while(rs.next()) {

@@ -87,7 +87,6 @@ public class TransactionGraphics extends JInternalFrame{
 	
 	Connection con;
 	JPanel topPanel, bottomPanel;
-	JPanel leftPanel, rightPanel;
 	JTable tblData;
 	JScrollPane scpData;
 	
@@ -96,12 +95,10 @@ public class TransactionGraphics extends JInternalFrame{
 		con = sqlConnector.connection();
 		topPanel = new JPanel();
 		bottomPanel = new JPanel();
-		leftPanel = new JPanel();
-		rightPanel = new JPanel();
 		tblData = new JTable();
 		scpData = new JScrollPane();
 		scpData.getViewport().add(tblData);
-		JFreeChart barChart = ChartFactory.createBarChart("Graphic Penjualan", "Category", "Nama Product", createBarData());
+		JFreeChart barChart = ChartFactory.createBarChart("Graphic Penjualan", "Category", "Quantity", createBarData());
 		JFreeChart pieChart = ChartFactory.createPieChart("Graphic Penjualan", createPieData(), true, true, false);
 		ChartPanel chartPanel = new ChartPanel(pieChart);
 		ChartPanel chartPanel2 = new ChartPanel(barChart);
@@ -111,10 +108,8 @@ public class TransactionGraphics extends JInternalFrame{
 		add(topPanel);
 		add(scpData);
 		topPanel.setLayout(new GridLayout(1, 2));
-		topPanel.add(leftPanel);
-		topPanel.add(rightPanel);
-		leftPanel.add(chartPanel);
-		rightPanel.add(chartPanel2);
+		topPanel.add(chartPanel);
+		topPanel.add(chartPanel2);
 	}
 
 
