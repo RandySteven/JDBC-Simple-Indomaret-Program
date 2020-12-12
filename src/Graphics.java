@@ -24,14 +24,15 @@ public class Graphics extends JFrame{
 	public CategoryDataset createBarData() {
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		try {
-			String query = "SELECT product.ProductName, category.CategoryName, SUM(DetailTransaction.Quantity)"
+			String query = "SELECT product.ProductName, HeaderTransaction.TransactionDate, SUM(DetailTransaction.Quantity)"
 					+ " FROM product JOIN category ON product.CategoryId = category.CategoryId JOIN DetailTransaction ON"
-					+ " DetailTransaction.ProductId = product.ProductId "
+					+ " DetailTransaction.ProductId = product.ProductId JOIN HeaderTransaction ON "
+					+ "HeaderTransaction.TransactionId = DetailTransaction.TransactionId "
 					+ "GROUP BY product.ProductId";
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);
 			while(rs.next()) {
-				dataset.addValue(rs.getInt(3), rs.getString(2), rs.getString(1));
+				dataset.addValue(rs.getInt(3), rs.getDate(2), rs.getString(1));
 			}
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e.getMessage());
