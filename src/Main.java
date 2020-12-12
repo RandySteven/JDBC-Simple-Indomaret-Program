@@ -1,4 +1,6 @@
 import java.awt.EventQueue;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +16,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
@@ -31,7 +34,12 @@ public class Main extends JFrame{
 		ManageStaff ms = new ManageStaff();
 	int RoleId=0;
 	public Main() {
-		
+		setContentPane(new JPanel() {
+			public void paintComponent(Graphics g) {
+				Image img = Toolkit.getDefaultToolkit().getImage(Main.class.getResource("/images/indomaret.jpeg"));
+				g.drawImage(img, this.getWidth(), this.getHeight(), this);
+			}
+		});
 	}
 	public void initiallize() {
 		menuUser = new JMenu("User");
@@ -115,6 +123,7 @@ public class Main extends JFrame{
 	
 	Connection con;
 	public Main(String email) {
+		
 		con = sqlConnector.connection();
 		bp = new BuyProduct(email);
 		tr = new Transaction(email);
