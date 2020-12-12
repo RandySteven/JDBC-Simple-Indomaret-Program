@@ -59,6 +59,19 @@ public class BuyProduct extends JInternalFrame{
 		txtStock.setText(null);
 	}
 	
+	public void query(String email) {
+		String search = "SELECT * FROM staff WHERE StaffEmail='"+email+"'";
+		try {
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery(search);
+			if(rs.next()) {
+				staffId = rs.getInt(1);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+	
 	JPanel tablePanel, dataPanel;
 	Integer productId=0;
 	public void left() {
@@ -79,8 +92,7 @@ public class BuyProduct extends JInternalFrame{
 		scpProduct = new JScrollPane();
 		scpProduct.getViewport().add(tblProduct);
 		tablePanel = new JPanel();
-		tablePanel.add(scpProduct);
-		centerLeftPanel.add(tablePanel);
+		centerLeftPanel.add(scpProduct);
 		
 		dataPanel = new JPanel();
 		dataPanel.setLayout(new GridLayout(4, 2, 30, 30));
@@ -117,16 +129,7 @@ public class BuyProduct extends JInternalFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				String search = "SELECT * FROM staff WHERE StaffEmail='"+email+"'";
-				try {
-					Statement st = con.createStatement();
-					ResultSet rs = st.executeQuery(search);
-					if(rs.next()) {
-						staffId = rs.getInt(1);
-					}
-				} catch (Exception e) {
-					// TODO: handle exception
-				}
+				
 				String query = "INSERT INTO cart VALUES (?, ?, ?)";
 				Integer qty = Integer.parseInt(spnQty.getValue().toString());
 				int productid = productId;
@@ -139,7 +142,10 @@ public class BuyProduct extends JInternalFrame{
 					JOptionPane.showMessageDialog(null, "Insert to cart success");
 					pst.close();
 					viewTableCart();
-					
+					txtName.setText(null);
+					txtPrice.setText(null);
+					txtStock.setText(null);
+					spnQty.setValue(0);
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(null, "Insert to cart failed : " + e.getMessage());
 				}
@@ -185,8 +191,8 @@ public class BuyProduct extends JInternalFrame{
 		scpCart = new JScrollPane();
 		scpCart.getViewport().add(tblCart);
 		cartTablePanel = new JPanel();
-		cartTablePanel.add(scpCart);
-		centerRightPanel.add(cartTablePanel);
+//		cartTablePanel.add(scpCart);
+		centerRightPanel.add(scpCart);
 
 		cartTotalPricePanel = new JPanel();
 		cartTotalPricePanel.setLayout(new GridLayout(1, 2, 30, 30));
@@ -239,7 +245,7 @@ public class BuyProduct extends JInternalFrame{
 					Statement st3 = con.createStatement();
 					while(rs2.next()) {
 						String query3 = "INSERT INTO DetailTransaction VALUE (LAST_INSERT_ID(), "+rs2.getInt(2)+", "+rs2.getInt(3)+")";
-						String query5 = "DELETE FROM cart WHERE StaffId='"+staffId+"' ";
+						String query5 = "DELETE FROM cart WHERE StaffId="+staffId+" ";
 						String query6 = "UPDATE product SET ProductStock=ProductStock-"+rs2.getInt(3)+" WHERE ProductId="+rs2.getInt(2)+" ";
 						st3.addBatch(query3);
 						st3.addBatch(query5);
@@ -322,9 +328,8 @@ public class BuyProduct extends JInternalFrame{
 		super("Buy Product", true, true, true, true);
 		con = sqlConnector.connection();
 		
-		initiallize();
-		this.email = email;
-		
+		query(email);
+		initiallize();		
 		
 		left();
 		right();

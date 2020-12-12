@@ -22,11 +22,12 @@ import javax.swing.event.MenuListener;
 
 public class Main extends JFrame{
 
-	JMenu menuTransaction, menuTransactionHistory, menuProduct, menuUser;
+	JMenu menuTransaction, menuTransactionHistory, menuProduct, menuUser, menuGraphics;
 	JMenuBar mb;
 	JMenuItem miLogout, miExit, miStaffManage;
 	JDesktopPane dp;
 //		
+		TransactionGraphics tg;
 		Login login;
 		BuyProduct bp;
 		ManageProduct mp = new ManageProduct();
@@ -41,7 +42,9 @@ public class Main extends JFrame{
 			}
 		});
 	}
+	
 	public void initiallize() {
+		menuGraphics = new JMenu("Transaction Graphics");
 		menuUser = new JMenu("User");
 		menuTransaction = new JMenu("Transaction");
 		menuTransactionHistory = new JMenu("Transaction History");
@@ -55,7 +58,7 @@ public class Main extends JFrame{
 		mb.add(menuTransaction);
 		mb.add(menuProduct);
 		mb.add(menuTransactionHistory);
-		
+		mb.add(menuGraphics);
 		menuUser.add(miStaffManage);
 		menuUser.add(miLogout);
 		menuUser.add(miExit);
@@ -65,15 +68,26 @@ public class Main extends JFrame{
 		menuTransaction.setVisible(false);
 		menuProduct.setVisible(false);
 		menuTransactionHistory.setVisible(false);
-		
+		menuGraphics.setVisible(false);
 
+		menuGraphics.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				tg = new TransactionGraphics();
+				dp.add(tg);
+				tg.setVisible(true);
+			}
+		});
+		
 		menuTransaction.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				dp.add(bp);
 				bp.setVisible(true);
 				bp.viewTableCart();
 				bp.viewTableProduct();
-				
+				tr.viewTableHeader();
+				tr.viewTableDetail();
+				tg.viewTable();
+				tg = new TransactionGraphics();
 			}
 		});
 		
@@ -127,7 +141,9 @@ public class Main extends JFrame{
 		con = sqlConnector.connection();
 		bp = new BuyProduct(email);
 		tr = new Transaction(email);
+		setTitle("Indomerat Cashier");
 		initiallize();
+		
 		try {
 			String query = "SELECT * FROM staff WHERE StaffEmail='"+email+"'";
 			Statement st = con.createStatement();
@@ -136,12 +152,11 @@ public class Main extends JFrame{
 				RoleId=rs.getInt(7);
 				if(RoleId==1) {
 					menuProduct.setVisible(true);
-					menuTransaction.setVisible(true);
 					miStaffManage.setVisible(true);
-					menuTransactionHistory.setVisible(true);
-				}else {
-					menuTransaction.setVisible(true);
+					menuGraphics.setVisible(true);
 				}
+				menuTransaction.setVisible(true);
+				menuTransactionHistory.setVisible(true);
 			}
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Error : " + e.getMessage());

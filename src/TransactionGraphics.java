@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -19,12 +20,11 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 
-public class Graphics extends JFrame{
-
+public class TransactionGraphics extends JInternalFrame{
 	public CategoryDataset createBarData() {
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		try {
-			String query = "SELECT product.ProductName, HeaderTransaction.TransactionDate, SUM(DetailTransaction.Quantity)"
+			String query = "SELECT product.ProductName, category.CategoryName, SUM(DetailTransaction.Quantity)"
 					+ " FROM product JOIN category ON product.CategoryId = category.CategoryId JOIN DetailTransaction ON"
 					+ " DetailTransaction.ProductId = product.ProductId JOIN HeaderTransaction ON "
 					+ "HeaderTransaction.TransactionId = DetailTransaction.TransactionId "
@@ -32,7 +32,7 @@ public class Graphics extends JFrame{
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);
 			while(rs.next()) {
-				dataset.addValue(rs.getInt(3), rs.getDate(2), rs.getString(1));
+				dataset.addValue(rs.getInt(3), rs.getString(2), rs.getString(1));
 			}
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e.getMessage());
@@ -90,7 +90,9 @@ public class Graphics extends JFrame{
 	JPanel leftPanel, rightPanel;
 	JTable tblData;
 	JScrollPane scpData;
-	public Graphics() {
+	
+	public TransactionGraphics() {
+		super("Graphics", true, true, true, true);
 		con = sqlConnector.connection();
 		topPanel = new JPanel();
 		bottomPanel = new JPanel();
@@ -113,13 +115,7 @@ public class Graphics extends JFrame{
 		topPanel.add(rightPanel);
 		leftPanel.add(chartPanel);
 		rightPanel.add(chartPanel2);
-		setVisible(true);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
 	}
 
-	public static void main(String[] args) {
-		new Graphics();
-	}
 
 }

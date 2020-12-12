@@ -101,6 +101,7 @@ public class Login extends JFrame{
 	Connection con;
 	public Login() {
 		con = sqlConnector.connection();
+		setTitle("Login");
 		initiallize();
 		setSize(500, 350);
 		setVisible(true);

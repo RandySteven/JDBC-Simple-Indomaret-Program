@@ -25,13 +25,12 @@ public class Transaction extends JInternalFrame{
 		add(leftPanel);
 		add(rightPanel);
 		
-		query();
 		left();
 		right();
 	}
 	
 //	Main main;
-	public void query() {
+	public void query(String email) {
 		try {
 			String query = "SELECT * FROM staff WHERE StaffEmail='"+email+"'";
 			Statement st = con.createStatement();
@@ -87,6 +86,7 @@ public class Transaction extends JInternalFrame{
 			String query = "SELECT HeaderTransaction.TransactionId, HeaderTransaction.TransactionDate, SUM(product.ProductPrice * DetailTransaction.Quantity) "
 					+ "FROM DetailTransaction JOIN product ON DetailTransaction.ProductId = product.ProductId JOIN HeaderTransaction"
 					+ " ON HeaderTransaction.TransactionId = DetailTransaction.TransactionId "
+					+ "WHERE HeaderTransaction.StaffId="+id+" "
 					+ "GROUP BY HeaderTransaction.TransactionId";
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);
@@ -110,7 +110,8 @@ public class Transaction extends JInternalFrame{
 		try {
 			String query = "SELECT DetailTransaction.TransactionId, product.ProductName, product.ProductPrice, DetailTransaction.Quantity "
 					+ "FROM DetailTransaction JOIN product ON DetailTransaction.ProductId = product.ProductId JOIN HeaderTransaction"
-					+ " ON HeaderTransaction.TransactionId = DetailTransaction.TransactionId"
+					+ " ON HeaderTransaction.TransactionId = DetailTransaction.TransactionId "
+					+ "WHERE HeaderTransaction.StaffId="+id+" "
 							+ " ORDER BY DetailTransaction.TransactionId ASC";
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);
@@ -130,7 +131,7 @@ public class Transaction extends JInternalFrame{
 	public Transaction(String email) {
 		super("Transaction History", true, true, true, true);
 		con = sqlConnector.connection();
-		this.email = email;
+		query(email);
 		initiallize();
 		setLayout(new GridLayout(1, 2));
 		setSize(Toolkit.getDefaultToolkit().getScreenSize());
