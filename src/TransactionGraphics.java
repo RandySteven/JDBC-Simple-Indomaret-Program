@@ -32,7 +32,7 @@ public class TransactionGraphics extends JInternalFrame{
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);
 			while(rs.next()) {
-				dataset.addValue(rs.getInt(3), rs.getString(2), rs.getString(1));
+				dataset.addValue(rs.getInt(3), rs.getString(1), rs.getString(2));
 			}
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e.getMessage());
@@ -98,7 +98,7 @@ public class TransactionGraphics extends JInternalFrame{
 		tblData = new JTable();
 		scpData = new JScrollPane();
 		scpData.getViewport().add(tblData);
-		JFreeChart barChart = ChartFactory.createBarChart("Graphic Penjualan", "Category", "Quantity", createBarData());
+		JFreeChart barChart = ChartFactory.createBarChart("Graphic Penjualan", "Product", "Quantity", createBarData());
 		JFreeChart pieChart = ChartFactory.createPieChart("Graphic Penjualan", createPieData(), true, true, false);
 		ChartPanel chartPanel = new ChartPanel(pieChart);
 		ChartPanel chartPanel2 = new ChartPanel(barChart);
