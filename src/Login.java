@@ -80,18 +80,20 @@ public class Login extends JFrame{
 							dispose();
 							Main main = new Main(email);
 							main.setVisible(true);
+						}else {
+							int opt = JOptionPane.showConfirmDialog(null, "You have not account yet. Do you want to create one? ");
+							switch (opt) {
+							case JOptionPane.YES_OPTION:
+								regis.setVisible(true);
+								dispose();
+								break;
+							default:
+								System.exit(0);
+								break;
+							}	
 						}
 					} catch (Exception e) {
-						int opt = JOptionPane.showConfirmDialog(null, "You have not account yet. Do you want to create one? " + e.getMessage());
-						switch (opt) {
-						case JOptionPane.YES_OPTION:
-							regis.setVisible(true);
-							dispose();
-							break;
-						default:
-							System.exit(0);
-							break;
-						}
+						JOptionPane.showMessageDialog(null, e.getMessage());
 					}
 				}
 			}

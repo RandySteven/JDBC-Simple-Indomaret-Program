@@ -129,25 +129,28 @@ public class BuyProduct extends JInternalFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
-				String query = "INSERT INTO cart VALUES (?, ?, ?)";
-				Integer qty = Integer.parseInt(spnQty.getValue().toString());
-				int productid = productId;
-				try {
-					PreparedStatement pst = con.prepareStatement(query);
-					pst.setInt(1, staffId);
-					pst.setInt(2, productid);
-					pst.setInt(3, qty);
-					pst.execute();
-					JOptionPane.showMessageDialog(null, "Insert to cart success");
-					pst.close();
-					viewTableCart();
-					txtName.setText(null);
-					txtPrice.setText(null);
-					txtStock.setText(null);
-					spnQty.setValue(0);
-				} catch (Exception e) {
-					JOptionPane.showMessageDialog(null, "Insert to cart failed : " + e.getMessage());
+				if(Integer.parseInt(spnQty.getValue().toString())<=0) {
+					JOptionPane.showMessageDialog(null, "Tidak bisa memasukkan product");
+				}else {					
+					String query = "INSERT INTO cart VALUES (?, ?, ?)";
+					Integer qty = Integer.parseInt(spnQty.getValue().toString());
+					int productid = productId;
+					try {
+						PreparedStatement pst = con.prepareStatement(query);
+						pst.setInt(1, staffId);
+						pst.setInt(2, productid);
+						pst.setInt(3, qty);
+						pst.execute();
+						JOptionPane.showMessageDialog(null, "Insert to cart success");
+						pst.close();
+						viewTableCart();
+						txtName.setText(null);
+						txtPrice.setText(null);
+						txtStock.setText(null);
+						spnQty.setValue(0);
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(null, "Insert to cart failed : " + e.getMessage());
+					}
 				}
 			}
 		});
@@ -167,12 +170,14 @@ public class BuyProduct extends JInternalFrame{
 				txtStock.setText(stock);
 			}
 		});
+		
 	}
 	
 	JPanel cartTablePanel, cartTotalPricePanel;
-	JLabel lblTotal;
-	JTextField txtTotal;
+	JLabel lblTotal, lblBayar;
+	JTextField txtTotal, txtBayar;
 	int count = 0;
+	Integer bayar = 0;
 	public void right() {
 		rightPanel.setLayout(new BorderLayout());
 		northRightPanel = new JPanel();
@@ -195,10 +200,14 @@ public class BuyProduct extends JInternalFrame{
 		centerRightPanel.add(scpCart);
 
 		cartTotalPricePanel = new JPanel();
-		cartTotalPricePanel.setLayout(new GridLayout(1, 2, 30, 30));
+		cartTotalPricePanel.setLayout(new GridLayout(2, 2, 30, 30));
 		lblTotal = new JLabel("Total");
+		lblBayar = new JLabel("Bayar");
 		txtTotal = new JTextField(0);
+		txtBayar = new JTextField(0);
 		txtTotal.setSize(500, 300);
+		cartTotalPricePanel.add(lblBayar);
+		cartTotalPricePanel.add(txtBayar);
 		cartTotalPricePanel.add(lblTotal);
 		cartTotalPricePanel.add(txtTotal);
 		centerRightPanel.add(cartTotalPricePanel);
@@ -231,42 +240,89 @@ public class BuyProduct extends JInternalFrame{
 					while(rs.next()) {
 						count += count;
 					}
-					Timestamp ts = new Timestamp(new java.util.Date().getTime());
-					PreparedStatement pst = con.prepareStatement(query);
-					pst.setInt(1, count);
-					pst.setInt(2, staffId);
-					pst.setTimestamp(3, ts);
-					pst.execute();
-					JOptionPane.showMessageDialog(null, "Insert header success");
-					pst.close();
-					
-					Statement st2 = con.createStatement();
-					ResultSet rs2 = st2.executeQuery(query4);
-					Statement st3 = con.createStatement();
-					while(rs2.next()) {
-						String query3 = "INSERT INTO DetailTransaction VALUE (LAST_INSERT_ID(), "+rs2.getInt(2)+", "+rs2.getInt(3)+")";
+						bayar = Integer.parseInt(txtBayar.getText());
+				
+						int kembalian = bayar - totalPrice;
+						Timestamp ts = new Timestamp(new java.util.Date().getTime());
+						PreparedStatement pst = con.prepareStatement(query);
+						pst.setInt(1, count);
+						pst.setInt(2, staffId);
+						pst.setTimestamp(3, ts);
+						pst.execute();
+						JOptionPane.showMessageDialog(null, "Insert header success");
+						pst.close();
+						Statement st2 = con.createStatement();
+						ResultSet rs2 = st2.executeQuery(query4);
+						Statement st3 = con.createStatement();
+						Statement st4 = con.createStatement();
+						while(rs2.next()) {
+							String query3 = "INSERT INTO DetailTransaction VALUE (LAST_INSERT_ID(), "+rs2.getInt(2)+", "+rs2.getInt(3)+")";
+							String query6 = "UPDATE product SET ProductStock=ProductStock-"+rs2.getInt(3)+" WHERE ProductId="+rs2.getInt(2)+" ";
+							st3.addBatch(query3);
+							st3.addBatch(query6);
+						}
 						String query5 = "DELETE FROM cart WHERE StaffId="+staffId+" ";
-						String query6 = "UPDATE product SET ProductStock=ProductStock-"+rs2.getInt(3)+" WHERE ProductId="+rs2.getInt(2)+" ";
-						st3.addBatch(query3);
-						st3.addBatch(query5);
-						st3.addBatch(query6);
-					}
-					st3.executeBatch();
-					JOptionPane.showMessageDialog(null, "Insert detail success");
-					viewTableCart();
-					viewTableProduct();
-					txtTotal.setText(null);
-					txtName.setText(null);
-					txtPrice.setText(null);
-					txtStock.setText(null);
-					spnQty.setValue(0);
+						st3.executeBatch();
+						JOptionPane.showMessageDialog(null, "Insert detail success");
+						JOptionPane.showMessageDialog(null, "Terimakasih sudah belanja disini kembalian anda adalah : " + kembalian);
+						st3.closeOnCompletion();
+						st4.execute(query5);
+						st4.close();
+						viewTableCart();
+						viewTableProduct();
+						txtTotal.setText("0");
+						txtName.setText(null);
+						txtPrice.setText(null);
+						txtStock.setText(null);
+						spnQty.setValue(0);
+						txtBayar.setText(null);
+						totalPrice = 0;
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(null, "Failed insert database : " + e.getMessage());
 				}
 				
 			}
 		});
+		
+		tblCart.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				int row = tblCart.rowAtPoint(e.getPoint());
+				String name = tblCart.getValueAt(row, 0).toString();
+				
+				String query = "SELECT * FROM product WHERE ProductName='"+name+"' ";
+				try {
+					Statement st = con.createStatement();
+					ResultSet rs = st.executeQuery(query);
+					while(rs.next()) {
+						product_id = rs.getInt(1);
+					}
+				} catch (Exception e2) {
+					// TODO: handle exception
+				}
+			}
+		});
+		
+		btnRemove.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				try {
+					String query = "DELETE FROM cart WHERE ProductId="+product_id+" ";
+					Statement st = con.createStatement();
+					st.execute(query);
+					JOptionPane.showMessageDialog(null, "Delete from cart success");
+					st.close();
+					viewTableCart();
+					totalPrice = 0;
+					txtTotal.setText(null);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+			}
+		});
 	}
+	int product_id;
 	
 	public void viewTableProduct() {
 		DefaultTableModel model = new DefaultTableModel();
