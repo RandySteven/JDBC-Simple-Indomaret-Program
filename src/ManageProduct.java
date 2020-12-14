@@ -13,6 +13,7 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,6 +24,7 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.ComboBoxModel;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -265,10 +267,11 @@ public class ManageProduct extends JInternalFrame{
 		rightCenterPanel.setLayout(new GridLayout(2,1));
 		rightCenterPanel.add(scpProduct);
 		rightCenterPanel.add(rightCenterBottomPanel);
+		JLabel lblImage = new JLabel();
 		
 		viewProduct();
 		bottom();
-		
+		rightBottomPanel.add(lblImage);
 		tblProduct.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				int row = tblProduct.rowAtPoint(e.getPoint());
@@ -279,6 +282,21 @@ public class ManageProduct extends JInternalFrame{
 				txtDataName.setText(detailName);
 				txtDataStock.setText(detailStock);
 				txtDataPrice.setText(detailPrice);
+				
+				String query = "SELECT * FROM product WHERE ProductId="+detailProductId+" ";
+				try {
+					Statement st = con.createStatement();
+					ResultSet rs = st.executeQuery(query);
+					byte[] imageData = null;
+					while(rs.next()) {
+						imageData = rs.getBytes(5);
+					}
+					Image img = Toolkit.getDefaultToolkit().createImage(imageData);
+					ImageIcon icon = new ImageIcon(img);
+					lblImage.setIcon(icon);
+				} catch (Exception e2) {
+					// TODO: handle exception
+				}
 			}
 		});
 	}
