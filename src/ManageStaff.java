@@ -118,7 +118,7 @@ public class ManageStaff extends JInternalFrame{
 	
 	public void centerRight() {
 		rightPanel.add(centerRightPanel, BorderLayout.CENTER);
-		String query = "SELECT * FROM staff";
+		String query = "SELECT * FROM role";
 		try {
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);
@@ -163,17 +163,17 @@ public class ManageStaff extends JInternalFrame{
 	
 	public void southRight() {
 		rightPanel.add(southRightPanel, BorderLayout.SOUTH);
-		southRightPanel.add(btnUpdate);
-		southRightPanel.add(btnDelete);
 		btnUpdate = new JButton("Update");
 		btnDelete = new JButton("Delete");
+		southRightPanel.add(btnUpdate);
+		southRightPanel.add(btnDelete);
 		
 		btnUpdate.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					String name = txtStaffName.getName();
+					String name = txtStaffName.getText();
 					Integer salary = Integer.parseInt(txtStaffSalary.getText());
 					Integer id = Integer.parseInt(txtStaffId.getText());
 					Integer roleId = 0;
@@ -184,10 +184,11 @@ public class ManageStaff extends JInternalFrame{
 					while(rs2.next()) {
 						roleId = rs2.getInt(1);
 					}
-					String query = "UPDATE staff SET StaffName='"+name+"', StaffSalary="+salary+" WHERE StaffId="+id+"";
+					String query = "UPDATE staff SET StaffName='"+name+"', StaffSalary="+salary+", RoleId="+roleId+" WHERE StaffId="+id+"";
 					st.execute(query);
 					JOptionPane.showMessageDialog(null, "Successs update staff");
 					st.close();
+					viewStaff();
 					clear();
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(null, e.getMessage());
@@ -206,6 +207,7 @@ public class ManageStaff extends JInternalFrame{
 					st.execute(query);
 					JOptionPane.showMessageDialog(null, "Delete success");
 					st.close();
+					viewStaff();
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(null, e.getMessage());
 				}
