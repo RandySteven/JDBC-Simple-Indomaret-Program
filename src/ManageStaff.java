@@ -72,10 +72,14 @@ public class ManageStaff extends JInternalFrame{
 				String id = tblStaff.getValueAt(row, 0).toString();
 				String name = tblStaff.getValueAt(row, 1).toString();
 				String salary = tblStaff.getValueAt(row, 3).toString();
+				String role = tblStaff.getValueAt(row, 4).toString();
+				
+				Object obj = cbRole.getSelectedItem();
 				
 				txtStaffId.setText(id);
 				txtStaffName.setText(name);
 				txtStaffSalary.setText(salary);
+				cbRole.setSelectedItem(role);
 			}
 		});
 	}
