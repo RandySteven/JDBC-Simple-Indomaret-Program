@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -132,7 +133,7 @@ public class ManageStaff extends JInternalFrame{
 		} catch (Exception e) {
 			
 		}
-		centerRightPanel.setLayout(new GridLayout(4, 2));
+		centerRightPanel.setLayout(new GridLayout(4, 2, 20, 20));
 		lblStaffId = new JLabel("Staff Id");
 		lblStaffName = new JLabel("Staff Name");
 		lblStaffSalary = new JLabel("Staff Salary");
@@ -155,6 +156,10 @@ public class ManageStaff extends JInternalFrame{
 		centerRightPanel.add(txtStaffSalary);
 		centerRightPanel.add(lblStaffRole);
 		centerRightPanel.add(cbRole);
+		
+		txtStaffId.setFont(new Font("SansSerif", Font.BOLD, 20));
+		txtStaffName.setFont(new Font("SansSerif", Font.BOLD, 20));
+		txtStaffSalary.setFont(new Font("SansSerif", Font.BOLD, 20));
 	}
 	
 	JButton btnUpdate, btnDelete;
