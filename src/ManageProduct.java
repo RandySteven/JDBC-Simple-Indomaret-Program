@@ -50,6 +50,16 @@ public class ManageProduct extends JInternalFrame{
 	JPanel leftNorthPanel, leftCenterPanel, leftSouthPanel;
 	JPanel rightNorthPanel, rightCenterPanel, rightSouthPanel;
 	ArrayList<String> categoryList = new ArrayList<>();
+	
+	public void clear() {
+		txtProductName.setText(null);
+		txtProductPrice.setText(null);
+		txtProductStock.setText(null);
+		txtDataName.setText(null);
+		txtDataPrice.setText(null);
+		txtDataStock.setText(null);
+	}
+	
 	public void initiallize() {
 		leftPanel = new JPanel();
 		rightPanel = new JPanel();
@@ -172,11 +182,13 @@ public class ManageProduct extends JInternalFrame{
 					JOptionPane.showMessageDialog(null, "Insert product data success");
 					pst.close();
 					viewProduct();
+					clear();
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(null, "Insert data failed : " + e.getMessage());
 				}
 			}
 		});
+		
 		
 		btnUpdate.addActionListener(new ActionListener() {
 			
@@ -211,6 +223,7 @@ public class ManageProduct extends JInternalFrame{
 					JOptionPane.showMessageDialog(null, "Success edit data");
 					st.close();
 					viewProduct();
+					clear();
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(null, "Error : " + e.getMessage());
 				}
@@ -236,6 +249,7 @@ public class ManageProduct extends JInternalFrame{
 						JOptionPane.showMessageDialog(null, "OK");
 						break;
 					}
+					clear();
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(null, "Error : " + e.getMessage());
 				}

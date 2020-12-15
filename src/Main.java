@@ -112,8 +112,9 @@ public class Main extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				dispose();
+				login = new Login();
 				login.setVisible(true);
+				setVisible(false);
 			}
 		});
 		

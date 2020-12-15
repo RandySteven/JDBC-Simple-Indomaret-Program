@@ -156,7 +156,7 @@ public class ManageStaff extends JInternalFrame{
 		centerRightPanel.add(txtStaffSalary);
 		centerRightPanel.add(lblStaffRole);
 		centerRightPanel.add(cbRole);
-		
+		cbRole.setFont(new Font("SansSerif", Font.BOLD, 20));
 		txtStaffId.setFont(new Font("SansSerif", Font.BOLD, 20));
 		txtStaffName.setFont(new Font("SansSerif", Font.BOLD, 20));
 		txtStaffSalary.setFont(new Font("SansSerif", Font.BOLD, 20));

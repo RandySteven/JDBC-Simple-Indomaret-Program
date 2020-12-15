@@ -77,7 +77,6 @@ public class Login extends JFrame{
 						ResultSet rs = st.executeQuery(query);
 						if(rs.next()) {				
 							int staffId = rs.getInt(1);
-							dispose();
 							Main main = new Main(email);
 							main.setVisible(true);
 						}else {
@@ -85,13 +84,16 @@ public class Login extends JFrame{
 							switch (opt) {
 							case JOptionPane.YES_OPTION:
 								regis.setVisible(true);
-								dispose();
+								break;
+							case JOptionPane.NO_OPTION:
+								setVisible(true);
 								break;
 							default:
 								System.exit(0);
 								break;
 							}	
 						}
+						setVisible(false);
 					} catch (Exception e) {
 						JOptionPane.showMessageDialog(null, e.getMessage());
 					}

@@ -113,6 +113,7 @@ public class BuyProduct extends JInternalFrame{
 		dataPanel.add(txtStock);
 		dataPanel.add(lblQty);
 		dataPanel.add(spnQty);
+		spnQty.setFont(new Font("SansSerif", Font.BOLD, 20));
 		centerLeftPanel.add(dataPanel);
 		
 		leftPanel.add(southLeftPanel, BorderLayout.SOUTH);
@@ -130,6 +131,7 @@ public class BuyProduct extends JInternalFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				totalPrice = 0;
 				if(Integer.parseInt(spnQty.getValue().toString())<=0) {
 					JOptionPane.showMessageDialog(null, "Tidak bisa memasukkan product");
 				}else {					
@@ -204,8 +206,8 @@ public class BuyProduct extends JInternalFrame{
 		cartTotalPricePanel.setLayout(new GridLayout(2, 2, 30, 30));
 		lblTotal = new JLabel("Total");
 		lblBayar = new JLabel("Bayar");
-		txtTotal = new JTextField(0);
-		txtBayar = new JTextField(0);
+		txtTotal = new JTextField();
+		txtBayar = new JTextField();
 		txtTotal.setSize(500, 300);
 		cartTotalPricePanel.add(lblBayar);
 		cartTotalPricePanel.add(txtBayar);
@@ -231,25 +233,28 @@ public class BuyProduct extends JInternalFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				String query = "INSERT INTO HeaderTransaction VALUE (?, ?, ?)";
-				String query2 = "SELECT * FROM HeaderTransaction";
-				String search = "SELECT * FROM staff WHERE StaffEmail='"+email+"' ";
-				
-				String query4 = "SELECT * FROM cart";
-				try {
-					Statement searchSt = con.createStatement();
-					ResultSet searchRs = searchSt.executeQuery(search);
-					if(searchRs.next()) {
-						staffId = searchRs.getInt(1);
-					}
+				if(Integer.parseInt(txtBayar.getText())<totalPrice) {
+					JOptionPane.showMessageDialog(null, "Bayar kurang");
+				}else {
+					String query = "INSERT INTO HeaderTransaction VALUE (?, ?, ?)";
+					String query2 = "SELECT * FROM HeaderTransaction";
+					String search = "SELECT * FROM staff WHERE StaffEmail='"+email+"' ";
 					
-					Statement st = con.createStatement();
-					ResultSet rs = st.executeQuery(query2);
-					while(rs.next()) {
-						count += count;
-					}
+					String query4 = "SELECT * FROM cart";
+					try {
+						Statement searchSt = con.createStatement();
+						ResultSet searchRs = searchSt.executeQuery(search);
+						if(searchRs.next()) {
+							staffId = searchRs.getInt(1);
+						}
+						
+						Statement st = con.createStatement();
+						ResultSet rs = st.executeQuery(query2);
+						while(rs.next()) {
+							count += count;
+						}
 						bayar = Integer.parseInt(txtBayar.getText());
-				
+						
 						int kembalian = bayar - totalPrice;
 						Timestamp ts = new Timestamp(new java.util.Date().getTime());
 						PreparedStatement pst = con.prepareStatement(query);
@@ -278,6 +283,7 @@ public class BuyProduct extends JInternalFrame{
 						st4.close();
 						viewTableCart();
 						viewTableProduct();
+						txtTotal.setText(null);
 						txtTotal.setText("0");
 						txtName.setText(null);
 						txtPrice.setText(null);
@@ -285,8 +291,9 @@ public class BuyProduct extends JInternalFrame{
 						spnQty.setValue(0);
 						txtBayar.setText(null);
 						totalPrice = 0;
-				} catch (Exception e) {
-					JOptionPane.showMessageDialog(null, "Failed insert database : " + e.getMessage());
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(null, "Failed insert database : " + e.getMessage());
+					}
 				}
 				
 			}
@@ -372,10 +379,9 @@ public class BuyProduct extends JInternalFrame{
 				model.addRow(new Object[] {						
 						rs.getString(1), rs.getInt(2), rs.getInt(3), rs.getInt(4)
 				});
-				price = rs.getInt(4);
+				totalPrice += rs.getInt(4);
 			}
 			tblCart.setModel(model);
-			totalPrice = totalPrice + price;
 			txtTotal.setText(totalPrice.toString());
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -390,10 +396,9 @@ public class BuyProduct extends JInternalFrame{
 	Connection con;
 	public BuyProduct(String email) {
 		super("Buy Product", true, true, true, true);
-		con = sqlConnector.connection();
-		
-		query(email);
+		con = sqlConnector.connection();		
 		initiallize();		
+		query(email);
 		
 		left();
 		right();
