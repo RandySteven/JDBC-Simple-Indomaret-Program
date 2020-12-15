@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -279,6 +280,10 @@ public class ManageProduct extends JInternalFrame{
 				String detailName = tblProduct.getValueAt(row, 1).toString();
 				String detailPrice = tblProduct.getValueAt(row, 2).toString();
 				String detailStock = tblProduct.getValueAt(row, 3).toString();
+				txtDataName.setFont(new Font("SansSerif", Font.BOLD, 20));
+				txtDataStock.setFont(new Font("SansSerif", Font.BOLD, 20));
+				txtDataPrice.setFont(new Font("SansSerif", Font.BOLD, 20));
+				
 				txtDataName.setText(detailName);
 				txtDataStock.setText(detailStock);
 				txtDataPrice.setText(detailPrice);

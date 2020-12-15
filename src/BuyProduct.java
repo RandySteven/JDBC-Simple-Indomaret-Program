@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Taskbar.State;
 import java.awt.Toolkit;
@@ -215,7 +216,10 @@ public class BuyProduct extends JInternalFrame{
 		rightPanel.add(southRightPanel, BorderLayout.SOUTH);
 		btnCheckout = new JButton("Check out");
 		southRightPanel.add(btnCheckout);
-		
+		txtTotal.setFont(new Font("SansSerif", Font.BOLD, 30));
+		txtBayar.setFont(new Font("SansSerif", Font.BOLD, 30));
+		lblTotal.setFont(new Font("SansSerif", Font.BOLD, 30));
+		lblBayar.setFont(new Font("SansSerif", Font.BOLD, 30));
 		viewTableCart();
 		txtTotal.setEditable(false);
 		txtTotal.setBorder(null);
@@ -288,6 +292,9 @@ public class BuyProduct extends JInternalFrame{
 			public void mouseClicked(MouseEvent e) {
 				int row = tblCart.rowAtPoint(e.getPoint());
 				String name = tblCart.getValueAt(row, 0).toString();
+				txtName.setFont(new Font("SansSerif", Font.BOLD, 20));
+				txtPrice.setFont(new Font("SansSerif", Font.BOLD, 20));
+				txtStock.setFont(new Font("SansSerif", Font.BOLD, 20));
 				
 				String query = "SELECT * FROM product WHERE ProductName='"+name+"' ";
 				try {
