@@ -58,6 +58,7 @@ public class ManageProduct extends JInternalFrame{
 		txtDataName.setText(null);
 		txtDataPrice.setText(null);
 		txtDataStock.setText(null);
+		lblImage.setIcon(null);
 	}
 	
 	public void initiallize() {
@@ -71,7 +72,7 @@ public class ManageProduct extends JInternalFrame{
 	Integer categoryId;
 	JLabel lblProductName, lblProductPrice, lblProductStock, lblProductPhoto, lblProductCategory;
 	JTextField txtProductName, txtProductPrice, txtProductStock;
-	JButton btnAdd, btnUpdate, btnDelete;
+	JButton btnAdd, btnDelete;
 	JFileChooser productImageChooser;
 	JComboBox categoryBox;
 	JButton btnFileChooser;
@@ -138,10 +139,8 @@ public class ManageProduct extends JInternalFrame{
 		leftPanel.add(leftSouthPanel, BorderLayout.SOUTH);
 		leftSouthPanel.setLayout(new FlowLayout());
 		btnAdd = new JButton("Add");
-		btnUpdate = new JButton("Update");
 		btnDelete = new JButton("Delete");
 		leftSouthPanel.add(btnAdd);
-		leftSouthPanel.add(btnUpdate);
 		leftSouthPanel.add(btnDelete);
 		
 		btnAdd.addActionListener(new ActionListener() {
@@ -179,7 +178,7 @@ public class ManageProduct extends JInternalFrame{
 					pst.setBlob(5, in);
 					pst.setInt(6, categoryId);
 					pst.execute();
-					JOptionPane.showMessageDialog(null, "Insert product data success");
+					JOptionPane.showMessageDialog(null, "Insert product success", "Success", JOptionPane.INFORMATION_MESSAGE);
 					pst.close();
 					viewProduct();
 					clear();
@@ -189,69 +188,24 @@ public class ManageProduct extends JInternalFrame{
 			}
 		});
 		
-		
-		btnUpdate.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				try {
-					String name = txtProductName.getText();
-					Integer price = Integer.parseInt(txtProductPrice.getText());
-					Integer stock = Integer.parseInt(txtProductStock.getText());
-					String category = categoryBox.getSelectedItem().toString();
-					File image = productImageChooser.getSelectedFile();
-					String imagePath = image.getPath();
-					InputStream in = new FileInputStream(imagePath);
-					String query = "SELECT * FROM category WHERE CategoryName='"+category+"'";
-					Statement st = con.createStatement();
-					ResultSet rs = st.executeQuery(query);
-					while(rs.next()) {
-						categoryId = rs.getInt(1);
-					}
-					String query2 = "UPDATE product SET ProductName='"+name+"', "
-							+ "ProductPrice="+price+", ProductStock="+stock+", CategoryId="+categoryId+", ProductImage='"+in+"' "
-							+ "WHERE ProductId="+detailProductId+" ";
-					String query3 = "UPDATE product SET ProductName='"+name+"', "
-							+ "ProductPrice="+price+", ProductStock="+stock+", CategoryId="+categoryId+" "
-							+ "WHERE ProductId="+detailProductId+" ";
-					if(in.nullInputStream() != null) {						
-						st.execute(query2);
-					}else {
-						st.execute(query3);
-					}
-					JOptionPane.showMessageDialog(null, "Success edit data");
-					st.close();
-					viewProduct();
-					clear();
-				} catch (Exception e) {
-					JOptionPane.showMessageDialog(null, "Error : " + e.getMessage());
-				}
-			}
-		});
-		
 		btnDelete.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					String query = "DELETE FROM product WHERE ProductId="+detailProductId+" ";
-					Statement st = con.createStatement();
-					int opt = JOptionPane.showConfirmDialog(null, "Are you sure want to delete " + detailProductId + " ?" );
-					switch (opt) {
-					case JOptionPane.YES_OPTION:
+				if(detailProductId!=0) {					
+					try {
+						String query = "DELETE FROM product WHERE ProductId="+detailProductId+" ";
+						Statement st = con.createStatement();
 						st.execute(query);
-						JOptionPane.showMessageDialog(null, "Delete success");
+						JOptionPane.showMessageDialog(null, "Delete success", "Success", JOptionPane.INFORMATION_MESSAGE);
 						st.close();
-						break;
-
-					default:
-						JOptionPane.showMessageDialog(null, "OK");
-						break;
+						clear();
+						viewProduct();
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(null, "Error : " + e.getMessage());
 					}
-					clear();
-				} catch (Exception e) {
-					JOptionPane.showMessageDialog(null, "Error : " + e.getMessage());
+				}else {
+					JOptionPane.showMessageDialog(null, "Product must be choosen", "Warning", JOptionPane.WARNING_MESSAGE);
 				}
 				
 			}
@@ -262,6 +216,7 @@ public class ManageProduct extends JInternalFrame{
 	JScrollPane scpProduct;
 	JPanel rightCenterTopPanel, rightCenterBottomPanel; 
 	Integer detailProductId = 0;
+	JLabel lblImage ;
 	public void right() {
 		tblProduct = new JTable();
 		scpProduct = new JScrollPane();
@@ -282,7 +237,7 @@ public class ManageProduct extends JInternalFrame{
 		rightCenterPanel.setLayout(new GridLayout(2,1));
 		rightCenterPanel.add(scpProduct);
 		rightCenterPanel.add(rightCenterBottomPanel);
-		JLabel lblImage = new JLabel();
+		lblImage = new JLabel();
 		
 		viewProduct();
 		bottom();

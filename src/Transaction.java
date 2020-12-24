@@ -1,6 +1,8 @@
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -46,6 +48,7 @@ public class Transaction extends JInternalFrame{
 	JLabel lblTitleHeader;
 	JTable tblHeader;
 	JScrollPane scpHeader;
+	Integer id2=0;
 	public void left() {
 		leftPanel.setLayout(new BorderLayout());
 		lblTitleHeader = new JLabel("Header Transaction");
@@ -58,6 +61,16 @@ public class Transaction extends JInternalFrame{
 		leftPanel.add(scpHeader, BorderLayout.CENTER);
 		
 		viewTableHeader();
+		
+		tblHeader.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				int row = tblHeader.rowAtPoint(e.getPoint());
+				String id1 = tblHeader.getValueAt(row, 0).toString();
+				id2 = Integer.parseInt(id1);
+				
+				viewTableDetail();
+			}
+		});
 	}
 	
 	JTable tblDetail;
@@ -109,9 +122,8 @@ public class Transaction extends JInternalFrame{
 		model.addColumn("Qty");
 		try {
 			String query = "SELECT DetailTransaction.TransactionId, product.ProductName, product.ProductPrice, DetailTransaction.Quantity "
-					+ "FROM DetailTransaction JOIN product ON DetailTransaction.ProductId = product.ProductId JOIN HeaderTransaction"
-					+ " ON HeaderTransaction.TransactionId = DetailTransaction.TransactionId "
-					+ "WHERE HeaderTransaction.StaffId="+id+" "
+					+ "FROM DetailTransaction JOIN product ON DetailTransaction.ProductId = product.ProductId "
+					+ "WHERE DetailTransaction.TransactionId="+id2+" "
 							+ " ORDER BY DetailTransaction.TransactionId ASC";
 			Statement st = con.createStatement();
 			ResultSet rs = st.executeQuery(query);

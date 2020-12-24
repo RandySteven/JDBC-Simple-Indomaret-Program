@@ -144,7 +144,6 @@ public class BuyProduct extends JInternalFrame{
 						pst.setInt(2, productid);
 						pst.setInt(3, qty);
 						pst.execute();
-						JOptionPane.showMessageDialog(null, "Insert to cart success");
 						pst.close();
 						viewTableCart();
 						txtName.setText(null);
@@ -234,7 +233,7 @@ public class BuyProduct extends JInternalFrame{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if(Integer.parseInt(txtBayar.getText())<totalPrice) {
-					JOptionPane.showMessageDialog(null, "Bayar kurang");
+					JOptionPane.showMessageDialog(null, "Bayar kurang", "Warning", JOptionPane.WARNING_MESSAGE);
 				}else {
 					String query = "INSERT INTO HeaderTransaction VALUE (?, ?, ?)";
 					String query2 = "SELECT * FROM HeaderTransaction";
@@ -262,7 +261,6 @@ public class BuyProduct extends JInternalFrame{
 						pst.setInt(2, staffId);
 						pst.setTimestamp(3, ts);
 						pst.execute();
-						JOptionPane.showMessageDialog(null, "Insert header success");
 						pst.close();
 						Statement st2 = con.createStatement();
 						ResultSet rs2 = st2.executeQuery(query4);
@@ -276,7 +274,7 @@ public class BuyProduct extends JInternalFrame{
 						}
 						String query5 = "DELETE FROM cart WHERE StaffId="+staffId+" ";
 						st3.executeBatch();
-						JOptionPane.showMessageDialog(null, "Insert detail success");
+						JOptionPane.showMessageDialog(null, "Success do transaction", "Success", JOptionPane.INFORMATION_MESSAGE);
 						JOptionPane.showMessageDialog(null, "Terimakasih sudah belanja disini kembalian anda adalah : " + kembalian);
 						st3.closeOnCompletion();
 						st4.execute(query5);
@@ -322,17 +320,21 @@ public class BuyProduct extends JInternalFrame{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				try {
-					String query = "DELETE FROM cart WHERE ProductId="+product_id+" ";
-					Statement st = con.createStatement();
-					st.execute(query);
-					JOptionPane.showMessageDialog(null, "Delete from cart success");
-					st.close();
-					viewTableCart();
-					totalPrice = 0;
-					txtTotal.setText(null);
-				} catch (Exception e) {
-					// TODO: handle exception
+				if(product_id!=0) {
+					try {
+						String query = "DELETE FROM cart WHERE ProductId="+product_id+" ";
+						Statement st = con.createStatement();
+						st.execute(query);
+						JOptionPane.showMessageDialog(null, "Delete from cart success", "Success", JOptionPane.INFORMATION_MESSAGE);
+						st.close();
+						viewTableCart();
+						totalPrice = 0;
+						txtTotal.setText(null);
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+				}else {
+					JOptionPane.showMessageDialog(null, "Product from cart must be choosen", "Warning", JOptionPane.WARNING_MESSAGE);
 				}
 			}
 		});

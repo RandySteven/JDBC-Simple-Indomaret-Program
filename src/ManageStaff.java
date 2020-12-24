@@ -181,26 +181,30 @@ public class ManageStaff extends JInternalFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					String name = txtStaffName.getText();
-					Integer salary = Integer.parseInt(txtStaffSalary.getText());
-					Integer id = Integer.parseInt(txtStaffId.getText());
-					Integer roleId = 0;
-					String roleName = cbRole.getSelectedItem().toString();
-					String query2 = "SELECT * FROM role WHERE RoleName='"+roleName+"' ";
-					Statement st = con.createStatement();
-					ResultSet rs2 = st.executeQuery(query2);
-					while(rs2.next()) {
-						roleId = rs2.getInt(1);
+				if(txtStaffId.getText().isBlank()) {
+					JOptionPane.showMessageDialog(null, "Staff must be choosen", "Warning", JOptionPane.WARNING_MESSAGE);
+				}else {					
+					try {
+						String name = txtStaffName.getText();
+						Integer salary = Integer.parseInt(txtStaffSalary.getText());
+						Integer id = Integer.parseInt(txtStaffId.getText());
+						Integer roleId = 0;
+						String roleName = cbRole.getSelectedItem().toString();
+						String query2 = "SELECT * FROM role WHERE RoleName='"+roleName+"' ";
+						Statement st = con.createStatement();
+						ResultSet rs2 = st.executeQuery(query2);
+						while(rs2.next()) {
+							roleId = rs2.getInt(1);
+						}
+						String query = "UPDATE staff SET StaffName='"+name+"', StaffSalary="+salary+", RoleId="+roleId+" WHERE StaffId="+id+"";
+						st.execute(query);
+						JOptionPane.showMessageDialog(null, "Successs update staff", "Success", JOptionPane.INFORMATION_MESSAGE);
+						st.close();
+						viewStaff();
+						clear();
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(null, e.getMessage());
 					}
-					String query = "UPDATE staff SET StaffName='"+name+"', StaffSalary="+salary+", RoleId="+roleId+" WHERE StaffId="+id+"";
-					st.execute(query);
-					JOptionPane.showMessageDialog(null, "Successs update staff");
-					st.close();
-					viewStaff();
-					clear();
-				} catch (Exception e) {
-					JOptionPane.showMessageDialog(null, e.getMessage());
 				}
 			}
 		});
@@ -209,16 +213,20 @@ public class ManageStaff extends JInternalFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					Integer id = Integer.parseInt(txtStaffId.getText());
-					String query = "DELETE FROM staff WHERE StaffId="+id+"";
-					Statement st = con.createStatement();
-					st.execute(query);
-					JOptionPane.showMessageDialog(null, "Delete success");
-					st.close();
-					viewStaff();
-				} catch (Exception e) {
-					JOptionPane.showMessageDialog(null, e.getMessage());
+				if(txtStaffId.getText().isBlank()) {
+					JOptionPane.showMessageDialog(null, "Staff must be choosen", "Warning", JOptionPane.WARNING_MESSAGE);
+				}else {					
+					try {
+						Integer id = Integer.parseInt(txtStaffId.getText());
+						String query = "DELETE FROM staff WHERE StaffId="+id+"";
+						Statement st = con.createStatement();
+						st.execute(query);
+						JOptionPane.showMessageDialog(null, "Delete staff success", "Success", JOptionPane.INFORMATION_MESSAGE);
+						st.close();
+						viewStaff();
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(null, e.getMessage());
+					}
 				}
 			}
 		});

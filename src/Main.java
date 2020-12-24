@@ -155,6 +155,9 @@ public class Main extends JFrame{
 					menuProduct.setVisible(true);
 					miStaffManage.setVisible(true);
 					menuGraphics.setVisible(true);
+					JOptionPane.showMessageDialog(null, "Welcome admin, " + rs.getString(2), "Welcome", JOptionPane.INFORMATION_MESSAGE);
+				}else {
+					JOptionPane.showMessageDialog(null, "Welcome, " + rs.getString(2), "Welcome", JOptionPane.INFORMATION_MESSAGE);
 				}
 				menuTransaction.setVisible(true);
 				menuTransactionHistory.setVisible(true);

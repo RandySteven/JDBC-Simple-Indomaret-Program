@@ -67,7 +67,7 @@ public class Login extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if(txtEmail.getText().isEmpty()&&txtPass.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(null, "You cannot put blank text");
+					JOptionPane.showMessageDialog(null, "You cannot put blank text", "Warning", JOptionPane.WARNING_MESSAGE);
 				}else {			
 					String email = txtEmail.getText();
 					String pass = txtPass.getText();
@@ -86,7 +86,8 @@ public class Login extends JFrame{
 								regis.setVisible(true);
 								break;
 							case JOptionPane.NO_OPTION:
-								setVisible(true);
+								txtEmail.setText(null);
+								txtPass.setText(null);
 								break;
 							default:
 								System.exit(0);
