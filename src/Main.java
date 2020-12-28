@@ -86,7 +86,7 @@ public class Main extends JFrame{
 				bp.viewTableProduct();
 				tr.viewTableHeader();
 				tr.viewTableDetail();
-				tg.viewTable();
+//				tg.viewTable();
 				tg = new TransactionGraphics();
 			}
 		});
