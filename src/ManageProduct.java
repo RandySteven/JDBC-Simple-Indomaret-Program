@@ -208,6 +208,7 @@ public class ManageProduct extends JInternalFrame{
 						st.close();
 						clear();
 						viewProduct();
+						lblImage.setIcon(null);
 					} catch (Exception e) {
 						JOptionPane.showMessageDialog(null, "Error : " + e.getMessage());
 					}
