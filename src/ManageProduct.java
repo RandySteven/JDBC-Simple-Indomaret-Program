@@ -58,7 +58,7 @@ public class ManageProduct extends JInternalFrame{
 		txtDataName.setText(null);
 		txtDataPrice.setText(null);
 		txtDataStock.setText(null);
-		lblImage.setIcon(null);
+		lblName.setText(null);
 	}
 	
 	public void initiallize() {
@@ -75,6 +75,7 @@ public class ManageProduct extends JInternalFrame{
 	JButton btnAdd, btnDelete;
 	JFileChooser productImageChooser;
 	JComboBox categoryBox;
+	JLabel lblName;
 	JButton btnFileChooser;
 	public void left() {
 		try {
@@ -122,7 +123,12 @@ public class ManageProduct extends JInternalFrame{
 		leftCenterPanel.add(lblProductStock);
 		leftCenterPanel.add(txtProductStock);
 		leftCenterPanel.add(lblProductPhoto);
-		leftCenterPanel.add(btnFileChooser);
+		lblName = new JLabel();
+		JPanel pnlButton = new JPanel();
+		leftCenterPanel.add(pnlButton);
+		pnlButton.setLayout(new FlowLayout());
+		pnlButton.add(btnFileChooser);
+		pnlButton.add(lblName);
 		leftCenterPanel.add(lblProductCategory);
 		leftCenterPanel.add(categoryBox);
 		
@@ -159,6 +165,7 @@ public class ManageProduct extends JInternalFrame{
 					File image = productImageChooser.getSelectedFile();
 					String imagePath = image.getPath();
 					InputStream in = new FileInputStream(imagePath);
+					lblName.setText(imagePath);
 					Statement st = con.createStatement();
 					Statement st2 = con.createStatement();
 					ResultSet rs = st.executeQuery(query2);
@@ -357,6 +364,7 @@ public class ManageProduct extends JInternalFrame{
 					txtDataName.setText(null);
 					txtDataPrice.setText(null);
 					txtDataStock.setText(null);
+					lblImage.setIcon(null);
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(null, "Error : " + e.getMessage());
 				}

@@ -6,9 +6,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="/home/randy/eclipse/mysql-connector-java-8.0.22.jar"/>
-	<classpathentry kind="lib" path="/home/randy/eclipse/jfreechart-1.0.19-demo.jar"/>
-	<classpathentry kind="lib" path="/home/randy/Downloads/jfreechart-1.5.1/src/main"/>
-	<classpathentry kind="lib" path="/home/randy/Downloads/jfreechart-demo-1.5.1-jar-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="/home/randy/eclipse-workspace/JDBC-Simple-Indomaret-Program/mysql-connector-java-8.0.23.jar"/>
+	<classpathentry kind="lib" path="/home/randy/Downloads/jfreechart-demo-1.5.2-jar-with-dependencies.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

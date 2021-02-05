@@ -68,6 +68,7 @@ public class sqlConnector {
 //					+ "PRIMARY KEY (StaffId, ProductId)"
 //					+ ")";
 			con = DriverManager.getConnection(url, user, password);
+			System.out.println("Connection success");
 //			JOptionPane.showMessageDialog(null, "Connection success");
 //			Statement st = con.createStatement();
 //			int opt1 = JOptionPane.showConfirmDialog(null, "Do you want to create role table");
